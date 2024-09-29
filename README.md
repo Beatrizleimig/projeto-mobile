@@ -1,5 +1,5 @@
 # projeto-mobile
-tem como  objetivo criar um quiz atraves da API (https://hp-api.herokuapp.com) 
+tem como  objetivo criar um quiz temático e interativo
 ultilizando a clean architecture
 ## Integrantes do Grupo
 1. Ana Beatriz Souza Leimig de Oliveira
