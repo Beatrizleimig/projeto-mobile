@@ -1,26 +1,29 @@
 package com.example.newmobileproject
 
+// ... imports ...
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import android.widget.Button
-import com.google.androidgamesdk.GameActivity
+import com.example.newmobileproject.databinding.ActivityMainBinding // Importe o Binding
 
-class MenuActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater) // Inicialize o Binding
+        setContentView(binding.root) // Defina o conteúdo da view
 
-        val buttonStartGame = findViewById<Button>(R.id.button_start_game)
-        val buttonViewScore = findViewById<Button>(R.id.button_view_score)
-
-        buttonStartGame.setOnClickListener {
+        // Listener do botão Start Game
+        binding.buttonStartGame.setOnClickListener { // Acesse as views pelo Binding
             // Inicie a activity do jogo
-            val intent = Intent(this, GameActivity::class.java)
+            val intent = Intent(this, jogoActivity::class.java)
             startActivity(intent)
         }
 
-        buttonViewScore.setOnClickListener {
+        // Listener do botão View Score
+        binding.buttonViewScore.setOnClickListener { // Acesse as views pelo Binding
             // Inicie a activity de pontuação
             val intent = Intent(this, jogoActivity::class.java)
             startActivity(intent)

@@ -1,11 +1,8 @@
 package com.example.newmobileproject
 
-import com.example.newmobileproject.R
 import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -20,21 +17,18 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.POST
 
-
-
 class loginActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivityLoginBinding
 
     // apiService
-    private val apiService: ApiService = RetrofitClient.getClient().create(ApiService::class.java)
+    private val apiService: ApiService= RetrofitClient.getClient().create(ApiService::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        // Inicializa as views
 
         // Configura o padding para edge-to-edge
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -44,13 +38,10 @@ class loginActivity : AppCompatActivity() {
         }
 
         // Listener do botão Cadastrar
-
-
         binding.buttonCadastrar.setOnClickListener {
             val intent = Intent(this, cadastroActivity::class.java)
             startActivity(intent)
         }
-
 
         // Listener do botão Login
         binding.buttonLogin.setOnClickListener {
@@ -75,11 +66,12 @@ class loginActivity : AppCompatActivity() {
             call.enqueue(object : Callback<LoginResponse> {
                 override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                     if (response.isSuccessful) {
-                        // Autenticação bem-sucedida
+                        // Autenticação bem-sucedidaMain
                         val token = response.body()?.token
                         // Salve o token em SharedPreferences ou outro mecanismo de persistência
                         // Navegue para a tela principal do aplicativo
-                        // ...
+                        val intent = Intent(this@loginActivity, MainActivity::class.java)
+                        startActivity(intent)
                         Toast.makeText(this@loginActivity, "Login realizado com sucesso!", Toast.LENGTH_SHORT).show()
                     } else {
                         // Autenticação falhou
@@ -104,7 +96,7 @@ interface ApiService {
 
 // Classe RetrofitClient
 object RetrofitClient {
-    private const val BASE_URL = "https://sua-api.com/" // Substitua pela URL da sua API
+    private const val BASE_URL = "https://sua-api.com/" // Substitua pela URL real da sua API
 
     fun getClient(): Retrofit {
         return Retrofit.Builder()
