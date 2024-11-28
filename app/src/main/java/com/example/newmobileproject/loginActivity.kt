@@ -2,33 +2,30 @@ package com.example.newmobileproject
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.newmobileproject.databinding.ActivityLoginBinding
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.Body
-import retrofit2.http.POST
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+
 
 class loginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
-
-    // apiService
-    private val apiService: ApiService= RetrofitClient.getClient().create(ApiService::class.java)
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Initialize Firebase Auth
+        auth = Firebase.auth
 
         // Configura o padding para edge-to-edge
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -45,8 +42,8 @@ class loginActivity : AppCompatActivity() {
 
         // Listener do botão Login
         binding.buttonLogin.setOnClickListener {
-            val email = binding.editTextEmail.text.toString()
-            val senha = binding.editTextSenha.text.toString()
+            val email = binding.editTextEmail.text.toString().trim()
+            val senha = binding.editTextSenha.text.toString().trim()
 
             // Validação dos dados
             if (email.isEmpty() || senha.isEmpty()) {
@@ -59,53 +56,33 @@ class loginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Autenticação do usuário
-            val loginRequest = LoginRequest(email, senha)
-            val call = apiService.login(loginRequest)
+            if (senha.length < 6) {
+                Toast.makeText(this, "A senha deve ter pelo menos 6 caracteres", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
-            call.enqueue(object : Callback<LoginResponse> {
-                override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
-                    if (response.isSuccessful) {
-                        // Autenticação bem-sucedidaMain
-                        val token = response.body()?.token
-                        // Salve o token em SharedPreferences ou outro mecanismo de persistência
-                        // Navegue para a tela principal do aplicativo
-                        val intent = Intent(this@loginActivity, MainActivity::class.java)
+            // Autenticação com Firebase
+            auth.signInWithEmailAndPassword(email, senha)
+                .addOnCompleteListener(this) { task ->
+                    println(task)
+                    if (task.isSuccessful) {
+                        // Login bem-sucedido
+                        val user = auth.currentUser
+                        Toast.makeText(this, "Login realizado com sucesso!", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
-                        Toast.makeText(this@loginActivity, "Login realizado com sucesso!", Toast.LENGTH_SHORT).show()
+                        finish()
                     } else {
-                        // Autenticação falhou
-                        Toast.makeText(this@loginActivity, "Email ou senha inválidos", Toast.LENGTH_SHORT).show()
+                        // Login falhou
+                        val exception = task.exception
+                        Log.e("FirebaseAuthError", "Erro no login: ${exception?.message}", exception)
+                        Toast.makeText(
+                            this,
+                            "Falha na autenticação: ${exception?.localizedMessage ?: "Erro desconhecido."}",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                 }
-
-                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                    // Erro na requisição
-                    Toast.makeText(this@loginActivity, "Erro na requisição", Toast.LENGTH_SHORT).show()
-                }
-            })
         }
     }
 }
-
-// Interface ApiService
-interface ApiService {
-    @POST("login") // Substitua pelo endpoint correto
-    fun login(@Body loginRequest: LoginRequest): Call<LoginResponse>
-}
-
-// Classe RetrofitClient
-object RetrofitClient {
-    private const val BASE_URL = "https://sua-api.com/" // Substitua pela URL real da sua API
-
-    fun getClient(): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
-}
-
-// Classes de dados
-data class LoginRequest(val email: String, val senha: String)
-data class LoginResponse(val token: String?)

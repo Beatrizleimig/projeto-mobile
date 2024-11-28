@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.newmobileproject.databinding.ActivityMainBinding // Importe o Binding
 
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -18,14 +19,14 @@ class MainActivity : AppCompatActivity() {
         // Listener do botão Start Game
         binding.buttonStartGame.setOnClickListener { // Acesse as views pelo Binding
             // Inicie a activity do jogo
-            val intent = Intent(this, jogoActivity::class.java)
+            val intent = Intent(this, JogoActivity::class.java)
             startActivity(intent)
         }
 
         // Listener do botão View Score
         binding.buttonViewScore.setOnClickListener { // Acesse as views pelo Binding
             // Inicie a activity de pontuação
-            val intent = Intent(this, jogoActivity::class.java)
+            val intent = Intent(this, scoreActivity::class.java)
             startActivity(intent)
         }
     }

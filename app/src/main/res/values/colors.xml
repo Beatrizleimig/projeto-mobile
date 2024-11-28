@@ -2,4 +2,20 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-</resources>
+
+        <!-- Cores principais -->
+        <color name="purple_500">#6200EE</color>
+        <color name="purple_700">#3700B3</color>
+        <color name="teal_200">#03DAC5</color>
+
+        <!-- Cores para botões e textos -->
+        <color name="button_text">#FFFFFF</color>
+        <color name="button_background">#6200EE</color>
+        <color name="button_background_pressed">#3700B3</color>
+
+        <!-- Outras cores úteis -->
+        <color name="error_red">#B00020</color>
+        <color name="success_green">#4CAF50</color>
+        <color name="info_blue">#2196F3</color>
+    </resources>
+

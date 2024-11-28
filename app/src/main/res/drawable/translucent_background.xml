@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<!-- Imagem de fundo -->
+<item android:drawable="@drawable/fundohp" />
+
+<!-- Camada semitransparente sobre a imagem -->
+<item>
+    <shape>
+        <solid android:color="#50000000" /> <!-- Cor preta com 50% de transparência -->
+    </shape>
+</item>
+</layer-list>
+
