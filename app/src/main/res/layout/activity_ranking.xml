@@ -27,7 +27,7 @@
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="RANKING DE HOJE:"
+        android:text="RANKING:"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
         android:layout_marginTop="16dp"
@@ -40,9 +40,9 @@
         android:id="@+id/llTopRanking"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_marginStart="55dp"
+        android:layout_marginStart="30dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="55dp"
+        android:layout_marginEnd="30dp"
         android:background="#660000"
         android:gravity="bottom"
         android:orientation="horizontal"
@@ -59,7 +59,7 @@
             android:layout_width="18dp"
             android:layout_height="160dp"
             android:layout_weight="1"
-            android:background="#E1B213"
+            android:background="@drawable/border_yellow"
             android:orientation="vertical">
 
             <TextView
@@ -74,27 +74,28 @@
             <TextView
 
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="95dp"
                 android:text="2"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
+
                 android:textSize="40sp" />
 
             <TextView
                 android:id="@+id/top2Score"
                 android:layout_width="match_parent"
-                android:layout_height="53dp"
+                android:layout_height="wrap_content"
                 android:text="570 Pontos"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
-                android:textSize="20sp" />
+                android:textSize="16sp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="22dp"
             android:layout_height="200dp"
             android:layout_weight="1"
-            android:background="#1A472A"
+            android:background="@drawable/border_green"
             android:orientation="vertical">
 
             <TextView
@@ -110,7 +111,7 @@
             <TextView
 
                 android:layout_width="match_parent"
-                android:layout_height="88dp"
+                android:layout_height="130dp"
                 android:text="1"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
@@ -119,18 +120,18 @@
             <TextView
                 android:id="@+id/top1Score"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="wrap_content"
                 android:text="490 Pontos"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
-                android:textSize="20sp" />
+                android:textSize="16sp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="17dp"
             android:layout_height="130dp"
             android:layout_weight="1"
-            android:background="#222F5B"
+            android:background="@drawable/border_blue"
             android:orientation="vertical">
 
             <TextView
@@ -145,7 +146,7 @@
             <TextView
 
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="75dp"
                 android:text="3"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
@@ -154,11 +155,11 @@
             <TextView
                 android:id="@+id/top3Score"
                 android:layout_width="match_parent"
-                android:layout_height="51dp"
+                android:layout_height="wrap_content"
                 android:text="450 Pontos"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
-                android:textSize="20sp" />
+                android:textSize="16sp" />
         </LinearLayout>
     </LinearLayout>
 
@@ -180,8 +181,8 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_ranking"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="302dp"
+            android:layout_height="409dp"
             android:layout_margin="8dp"
             android:clipToPadding="false"
             android:padding="8dp"

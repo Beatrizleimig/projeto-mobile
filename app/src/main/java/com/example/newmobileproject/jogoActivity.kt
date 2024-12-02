@@ -26,6 +26,8 @@ class JogoActivity : AppCompatActivity() {
     private var correctAnswers = 0
     private var incorrectAnswers = 0
     private var countDownTimer: CountDownTimer? = null
+    private var isTimeUp = false
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +45,8 @@ class JogoActivity : AppCompatActivity() {
         binding.option2.setOnClickListener { checkAnswer(1) }
         binding.option3.setOnClickListener { checkAnswer(2) }
         binding.option4.setOnClickListener { checkAnswer(3) }
+
+
 
     }
 
@@ -90,6 +94,10 @@ class JogoActivity : AppCompatActivity() {
 
         resetProgressBar() // Reseta o progresso do ProgressBar
         startTimer(12) // 20 segundos por questão
+
+
+        // Resetando a variável isTimeUp antes de carregar a nova pergunta
+        isTimeUp = false
     }
     private fun resetProgressBar() {
         // Cancela o temporizador atual (se estiver ativo) e reseta o progresso
@@ -115,12 +123,39 @@ class JogoActivity : AppCompatActivity() {
                 binding.timerProgressBar.progress = progressBarMax
                 Toast.makeText(this@JogoActivity, "Tempo esgotado!", Toast.LENGTH_SHORT).show()
 
-                // Carrega a próxima pergunta ou finaliza o quiz
+                // Marca a resposta como errada quando o tempo acabar
+                isTimeUp = true
                 loadNextQuestionOrEndQuiz()
             }
         }
         countDownTimer?.start() // Inicia o temporizador
     }
+
+
+//    private fun startTimer(durationInSeconds: Int) {
+//        val progressBarMax = durationInSeconds * 1000
+//        binding.timerProgressBar.max = progressBarMax
+//
+//        // Cancela o temporizador anterior (se existir)
+//        countDownTimer?.cancel()
+//
+//        // Inicia um novo temporizador
+//        countDownTimer = object : CountDownTimer(progressBarMax.toLong(), 100) {
+//            override fun onTick(millisUntilFinished: Long) {
+//                binding.timerProgressBar.progress = (progressBarMax - millisUntilFinished).toInt()
+//            }
+//
+//            override fun onFinish() {
+//                // Atualiza o progresso para o máximo e avisa o usuário
+//                binding.timerProgressBar.progress = progressBarMax
+//                Toast.makeText(this@JogoActivity, "Tempo esgotado!", Toast.LENGTH_SHORT).show()
+//
+//                // Carrega a próxima pergunta ou finaliza o quiz
+//                loadNextQuestionOrEndQuiz()
+//            }
+//        }
+//        countDownTimer?.start() // Inicia o temporizador
+//    }
 
 
 
@@ -129,6 +164,11 @@ class JogoActivity : AppCompatActivity() {
 
         // Cancela o temporizador atual, já que o jogador respondeu
         countDownTimer?.cancel()
+
+        if (isTimeUp) {
+            incorrectAnswers++
+            Toast.makeText(this, "Tempo esgotado! Resposta errada.", Toast.LENGTH_SHORT).show()
+        }
 
         // Verifica se a resposta está correta
         if (selectedIndex == correctIndex) {

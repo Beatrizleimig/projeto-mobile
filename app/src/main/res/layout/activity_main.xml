@@ -30,14 +30,18 @@
                 android:id="@+id/button_start_game"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Começar Jogo" />
+                android:backgroundTint="#1A472A"
+                android:text="Começar Jogo"
+                android:textColor="#FFFFFF" />
 
             <Button
                 android:id="@+id/button_view_score"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Ver sua Pontuação" />
+                android:backgroundTint="#222F5B"
+                android:text="Ver sua Pontuação"
+                android:textColor="#FFFFFF" />
 
         </LinearLayout>
 

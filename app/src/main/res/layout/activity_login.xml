@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -26,7 +27,8 @@
             android:layout_width="match_parent"
             android:layout_height="240dp"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="16dp"
+          >
 
             <!-- Elementos do formulário de login aqui -->
             <EditText
@@ -34,7 +36,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Email"
-                android:textColor="#1D1C1C" />
+                android:textColor="#000000"
+                android:textColorHint="#A4A4A4"/>
 
             <EditText
                 android:id="@+id/editTextSenha"
@@ -42,7 +45,8 @@
                 android:layout_height="wrap_content"
                 android:hint="Senha"
                 android:inputType="textPassword"
-                android:textColor="#000000" />
+                android:textColor="#000000"
+                android:textColorHint="#A4A4A4"/>
 
             <Button
                 android:id="@+id/buttonLogin"

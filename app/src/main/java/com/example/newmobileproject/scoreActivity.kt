@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.newmobileproject.databinding.ActivityScoreBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import java.util.*
 
@@ -25,15 +26,7 @@ class scoreActivity : AppCompatActivity() {
 
         db = FirebaseFirestore.getInstance()
 
-        // Recebe a pontuação diária da JogoActivity
-        val dailyScore = intent.getIntExtra("NOW_SCORE", 0)
-
-        // Exibe a pontuação na interface do usuário
-        binding.UltimaPontuacao.text = dailyScore.toString()
-        binding.tvPontuacaoDia.text = dailyScore.toString()
-
-        // Calcula e exibe as pontuações mensais e gerais
-        renderScore(dailyScore)
+        showScores()
 
         // Configura o botão de voltar para redirecionar ao MainActivity
         binding.btnVoltar.setOnClickListener {
@@ -43,51 +36,97 @@ class scoreActivity : AppCompatActivity() {
         }
     }
 
-    private fun renderScore(dailyScore: Int) {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+    private fun showScores() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
 
+        if (userId.isEmpty()) {
+            Toast.makeText(this, "Usuário não autenticado", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        getOverallScore(userId)
+    }
+
+    private fun sumPointsForToday(userScores: List<UserScore>): Int {
+        val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+        calendar.time = Date()
+
+        // Define the start and end of the day
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+        val startOfDay = calendar.time
+
+        calendar.set(Calendar.HOUR_OF_DAY, 23)
+        calendar.set(Calendar.MINUTE, 59)
+        calendar.set(Calendar.SECOND, 59)
+        calendar.set(Calendar.MILLISECOND, 999)
+        val endOfDay = calendar.time
+
+        return userScores.filter { it.timestamp in startOfDay..endOfDay }
+            .sumOf { it.points }
+    }
+
+    private fun sumPointsForCurrentMonth(querySnapshot: QuerySnapshot): Int {
+        val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+        calendar.time = Date()
+
+        // Define the start of the month
+        calendar.set(Calendar.DAY_OF_MONTH, 1)
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+        val startOfMonth = calendar.time
+
+        // Define the end of the month
+        calendar.add(Calendar.MONTH, 1)
+        calendar.set(Calendar.DAY_OF_MONTH, 1)
+        calendar.add(Calendar.DAY_OF_MONTH, -1)
+        calendar.set(Calendar.HOUR_OF_DAY, 23)
+        calendar.set(Calendar.MINUTE, 59)
+        calendar.set(Calendar.SECOND, 59)
+        calendar.set(Calendar.MILLISECOND, 999)
+        val endOfMonth = calendar.time
+
+        val userScores = querySnapshot.toObjects(UserScore::class.java)
+        return userScores.filter { it.timestamp in startOfMonth..endOfMonth }
+            .sumOf { it.points }
+    }
+
+    private fun getOverallScore(userId: String) {
         db.collection("user_scores")
             .whereEqualTo("userId", userId)
+            .orderBy("timestamp", Query.Direction.DESCENDING)
             .get()
             .addOnSuccessListener { result ->
-                val scores = calculateMonthlyAndOverallScores(result)
-                updateUIWithScores(scores, dailyScore)
+                val userScores = result.toObjects(UserScore::class.java)
+                var overallScore = 0
+
+                if (userScores.isEmpty()) {
+                    return@addOnSuccessListener
+                }
+
+                userScores.forEach {
+                    overallScore += it.points
+                    Log.d("test", "daily: $it")
+                }
+
+                binding.UltimaPontuacao.text = "${userScores.first().points}"
+                binding.tvPontuacaoSempre.text = "$overallScore"
+                binding.tvPontuacaoDia.text = "${sumPointsForToday(userScores)}"
+                binding.tvPontuacaoMes.text = "${sumPointsForCurrentMonth(result)}"
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Erro ao carregar pontuações: ${e.message}", Toast.LENGTH_SHORT).show()
+                Log.d("test", e.toString())
             }
     }
 
-
-    private fun calculateMonthlyAndOverallScores(result: QuerySnapshot): Pair<Int, Int> {
-        var monthlyScore = 0
-        var overallScore = 0
-
-        for (document in result) {
-            val points = document.getLong("points")?.toInt() ?: 0
-            val timestamp = document.getTimestamp("timestamp")?.toDate()
-
-            if (timestamp != null && isCurrentMonth(timestamp)) {
-                monthlyScore += points
-            }
-            overallScore += points
-        }
-        return Pair(monthlyScore, overallScore)
-    }
-
-    private fun updateUIWithScores(scores: Pair<Int, Int>, dailyScore: Int) {
-        val (monthlyScore, overallScore) = scores
-
-        // Atualiza as pontuações exibidas no TextView
-        binding.tvPontuacaoMes.text = (monthlyScore + dailyScore).toString()
-        binding.tvPontuacaoSempre.text = (overallScore + dailyScore).toString()
-    }
-
-    private fun isCurrentMonth(date: Date): Boolean {
-        val current = Calendar.getInstance()
-        val record = Calendar.getInstance().apply { time = date }
-
-        return current.get(Calendar.YEAR) == record.get(Calendar.YEAR) &&
-                current.get(Calendar.MONTH) == record.get(Calendar.MONTH)
-    }
+    data class UserScore(
+        val userId: String = "",
+        val points: Int = 0,
+        val timestamp: Date = Date(),
+    )
 }

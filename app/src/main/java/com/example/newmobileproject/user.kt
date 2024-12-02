@@ -1,8 +1,13 @@
 package com.example.newmobileproject
 
+//data class User(
+//    val name: String = "",
+//    val score: Int = 0
+//)
 data class User(
-    val name: String = "",
-    val score: Int = 0
+    val userId: String,
+    val name: String,
+    val score: Int
 )
 
 

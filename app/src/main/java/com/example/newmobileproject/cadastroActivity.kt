@@ -66,22 +66,37 @@ class cadastroActivity : AppCompatActivity() {
                                 "points" to 0  // Pontuação inicial do usuário
                             )
 
-                            // Salva no Firestore
-                            db.collection("user_scores")
+                            // Salva na coleção "users" (para armazenar dados do usuário, incluindo nome)
+                            db.collection("users") // A coleção "users" agora guarda os dados de cada usuário
                                 .document(user.uid)
                                 .set(userData)
                                 .addOnSuccessListener {
-                                    Toast.makeText(this, "Cadastro realizado com sucesso!", Toast.LENGTH_SHORT).show()
-                                    finish() // Volta para a tela de login ou para outra atividade
+                                    // Após salvar com sucesso, salva também a pontuação inicial
+                                    val userScoreData = hashMapOf(
+                                        "userId" to user.uid,
+                                        "points" to 0  // Pontuação inicial do usuário
+                                    )
+
+                                    // Salva a pontuação do usuário na coleção "user_scores"
+                                    db.collection("user_scores")
+                                        .document(user.uid)
+                                        .set(userScoreData)
+                                        .addOnSuccessListener {
+                                            Toast.makeText(this, "Cadastro realizado com sucesso!", Toast.LENGTH_SHORT).show()
+                                            finish() // Volta para a tela de login ou para outra atividade
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Toast.makeText(this, "Erro ao salvar pontuação: ${e.message}", Toast.LENGTH_SHORT).show()
+                                        }
                                 }
                                 .addOnFailureListener { e ->
-                                    Toast.makeText(this, "Erro ao salvar dados: ${e.message}", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(this, "Erro ao salvar nome: ${e.message}", Toast.LENGTH_SHORT).show()
                                 }
                         }
                     } else {
                         // Se o cadastro falhar, mostra uma mensagem de erro
                         Log.w("teste", "createUserWithEmail:failure", task.exception)
-                        Toast.makeText(baseContext, "Autenticação falhou.", Toast.LENGTH_SHORT).show()
+
                     }
                 }
         }
