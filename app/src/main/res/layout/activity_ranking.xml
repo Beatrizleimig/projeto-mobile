@@ -66,7 +66,7 @@
                 android:id="@+id/top2Name"
                 android:layout_width="match_parent"
                 android:layout_height="34dp"
-                android:text="Francisco"
+
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
                 android:textSize="18sp" />
@@ -102,7 +102,7 @@
                 android:id="@+id/top1Name"
                 android:layout_width="match_parent"
                 android:layout_height="39dp"
-                android:text="Catarina"
+
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
                 android:textSize="18sp" />
@@ -138,7 +138,6 @@
                 android:id="@+id/top3Name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Lin Tse Min"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
                 android:textSize="18sp" />
